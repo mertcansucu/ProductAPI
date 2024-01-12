@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "ypr6bizrY7i6uhbmjfml3I2ec1cwCAkVXH6R3ig14mzFFK4GSSrr7p2mVdjBcBe4ZEOpOgVhvPPsSG1aYdVbjA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Mert Can SUCU\\OneDrive - Ataturk University\\Masaüstü\\ProductAPI\\ProductAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.5\\microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\microsoft.openapi\\1.4.3\\microsoft.openapi.1.4.3.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.4.0\\swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.4.0\\swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",
+    "C:\\Users\\Mert Can SUCU\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.4.0\\swashbuckle.aspnetcore.swaggerui.6.4.0.nupkg.sha512"
+  ],
+  "logs": []
+}
