@@ -31,13 +31,38 @@ namespace ProductAPI.Controllers
 
         //localhost:5000/api/products => GET burda tüm listeyi
         [HttpGet]
-        public List<Product> GetProducts(){
-            return _products ?? new List<Product>();//bunun kısayolu return _products == null ? new List<Product>() : _products
+        public IActionResult GetProducts(){
+            // return _products ?? new List<Product>();//bunun kısayolu return _products == null ? new List<Product>() : _products
+
+            if (_products == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_products);
         }
 
         [HttpGet("{id}")]//localhost:5000/api/products/1 => GET ben burda sadece nir elemanı geri getiriyorum
-        public Product GetProduct(int id){
-            return _products?.FirstOrDefault(i => i.ProductId == id) ?? new Product();//ben burda diyorum ki _products? null olmadığında içinde gez ve id si eşleşeni getir, ?? burda da diyorum ki eğer eşleşen yoksa null sa, new Product() boş olarak döndür(default değerleriyle)
+        public IActionResult GetProduct(int? id){
+            /*ben artık dönderilen değerlein durumuna göre hata mesajları göndericem mesela ben kayıtlı olmasa bile 12 id li birini göderince default olarak dönderiyor ve durum olarak 200 yani başarılı dönderiyor ama bunun ben böyle olmasını istemiyorum eğer yoksa mesela hata mesajını vermem lazım ki frontend ci bunları anlayabilsin
+             return _products?.FirstOrDefault(i => i.ProductId == id) ?? new Product();//ben burda diyorum ki _products? null olmadığında içinde gez ve id si eşleşeni getir, ?? burda da diyorum ki eğer eşleşen yoksa null sa, new Product() boş olarak döndür(default değerleriyle)
+            */
+
+            if (id == null)
+            {
+                return NotFound();//burda hatayı dönderdim ama bunu kendim yazmak istersem şöyle yaparım return StatusCode(404,"")tırnaklar arsında istediğim meseajı yazıp cevabı dönderebilirim
+            }
+
+            var p = _products?.FirstOrDefault(i => i.ProductId == id);//_products? böyle yaparak products listesinin boş olmadığından emin oldum eğer boş değilse aldım bilgileri
+
+            if (p == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(p);//Ok bir hazır fonk. bana 200 kodu ile başarılı kaydı dönderir
+
+            
         }
     }
 }
