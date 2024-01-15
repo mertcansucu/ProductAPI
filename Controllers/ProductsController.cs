@@ -106,5 +106,33 @@ namespace ProductAPI.Controllers
 
             return NoContent(); //204 lü http status bir sorun olmadan çalıştığını söylüyorum ve geriye bir dönüş yaptırmıyorum
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int? id){
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(i => i.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _context.Products.Remove(product);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent(); //204 lü http status bir sorun olmadan çalıştığını söylüyorum ve geriye bir dönüş yaptırmıyorum 
+        }
     }
 }
