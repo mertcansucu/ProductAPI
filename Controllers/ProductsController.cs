@@ -77,6 +77,34 @@ namespace ProductAPI.Controllers
             //mesela adres => http://localhost:5177/api/Products/6 
         }
 
-        
+        [HttpPut("{id}")]//localhost:5000/api/products/1 => Put ben burda id ile eşleşen elemanı güncelleme yapıcam
+        public async Task<IActionResult> UpdateProduct(int id, Product entity){
+            if (id != entity.ProductId)
+            {
+                return BadRequest();//400 nolu http status hatası,kullanıcı tarafından yanlış bir işlem yapıldığını gösterir
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(i => i.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.ProductName = entity.ProductName;
+            product.Price = entity.Price;
+            product.IsActive = entity.IsActive;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+
+            return NoContent(); //204 lü http status bir sorun olmadan çalıştığını söylüyorum ve geriye bir dönüş yaptırmıyorum
+        }
     }
 }
