@@ -65,5 +65,18 @@ namespace ProductAPI.Controllers
 
             
         }
+
+        [HttpPost]
+
+        public async Task<IActionResult> CreateProduct(Product entity){
+            _context.Products.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProduct),new {id = entity.ProductId}, entity);//CreatedAtAction HTTP response status kodlarından 201 başarılı kodudur kayıt eklendi diye;201 durum koduyla başarılı olduğunu söylüyorum yani kayot eklendiğini ve eklendikten sonra kullanıcıya bir adres göndericez yani kullanıcıya hangi kişiyi eklediğimizin urlsini göndericez
+
+            //mesela adres => http://localhost:5177/api/Products/6 
+        }
+
+        
     }
 }
