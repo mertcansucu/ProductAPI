@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProductAPI.DTO;
 using ProductAPI.Models;
 
 namespace ProductAPI.Controllers
@@ -38,7 +39,18 @@ namespace ProductAPI.Controllers
         public async Task<IActionResult> GetProducts(){
             // return _products ?? new List<Product>();//bunun kısayolu return _products == null ? new List<Product>() : _products
 
-            var products =await _context.Products.ToListAsync();
+            /* bu haliylede istediklerimi çağırıyorum ama aşşağıda oluşturduğum fonk ile direk getiricem
+            var products =  await _context
+                            .Products.Where(i => i.IsActive).Select(p => 
+                            //Where(i => i.IsActive) burda diyprum ki Isactive alanı ture olanları getir
+                                    new ProductDTO{
+                                        ProductId = p.ProductId,
+                                        ProductName = p.ProductName,
+                                        Price = p.Price
+                            }).ToListAsync();
+            */
+            var products =  await _context
+                            .Products.Where(i => i.IsActive).Select(p => ProductToDTO(p)).ToListAsync();
 
             return Ok(products);
         }
@@ -54,7 +66,10 @@ namespace ProductAPI.Controllers
                 return NotFound();//burda hatayı dönderdim ama bunu kendim yazmak istersem şöyle yaparım return StatusCode(404,"")tırnaklar arsında istediğim meseajı yazıp cevabı dönderebilirim
             }
 
-            var p =await _context.Products.FirstOrDefaultAsync(i => i.ProductId == id);//_products? böyle yaparak products listesinin boş olmadığından emin oldum eğer boş değilse aldım bilgileri
+            var p =await _context
+                            .Products
+                            .Select(p => ProductToDTO(p))
+                            .FirstOrDefaultAsync(i => i.ProductId == id);//_products? böyle yaparak products listesinin boş olmadığından emin oldum eğer boş değilse aldım bilgileri
 
             if (p == null)
             {
@@ -133,6 +148,15 @@ namespace ProductAPI.Controllers
             }
 
             return NoContent(); //204 lü http status bir sorun olmadan çalıştığını söylüyorum ve geriye bir dönüş yaptırmıyorum 
+        }
+
+        private static ProductDTO ProductToDTO(Product p){//ben bunu oluşturup bilgileri çağırdığımda hangi bilgileri geleceğini söyledim, sonrasında o fonk. verip o şekilde çağırıcam
+            return new ProductDTO//geri gelecek alan
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Price = p.Price
+            };
         }
     }
 }
