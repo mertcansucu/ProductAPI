@@ -13,10 +13,12 @@ namespace ProductAPI.Controllers
     [Route("api/[controller]")]
     public class UsersController: ControllerBase
     {
-        private UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public UsersController(UserManager<AppUser> userManager){
+        public UsersController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager){
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost("register")]
@@ -40,6 +42,25 @@ namespace ProductAPI.Controllers
             }
 
             return BadRequest(result);//result succes değilse hata dönderdim
+        }
+
+        public async Task<IActionResult> Login(LoginDTO model){
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return BadRequest(new {message = "Email Hatalı!"});
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password,false);//burdaki 3. parametre olan false programcs de buraya eklediğim 5 kere hatalı girebilirsin gibi kuralları aktif etmek istiyor musun diyor yok dedim bende
+
+            if (result.Succeeded)
+            {
+                return Ok(
+                    new { token = "token"}
+                );
+            }
+            return Unauthorized();//403 nolu hatadır yetkiniz yok diyorum
         }
     }
 }
