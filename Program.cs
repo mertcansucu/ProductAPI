@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProductAPI.Models;
 
@@ -19,6 +20,27 @@ builder.Services.AddDbContext<ProductsContext>(x => x.UseSqlite("Data Source = p
  
 
 */
+builder.Services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<ProductsContext>();//entity de kullanacağım kütüphaneler ve veritanıyla bağlantılı olan yeri ekledim(ProductsContext)
+
+/*console eklemem gereken komutlar:
+    dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 7.0.12
+    dotnet ef migrations add IdentityTables
+    dotnet ef database update
+
+*/
+builder.Services.Configure<IdentityOptions>(options =>{//identity default ayarlarını değiştirdim
+    options.Password.RequiredLength = 4;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+});
 
 builder.Services.AddControllers();//yalın bir controller bu biz burda oluşturduğumuz json dataları frontend geliştirici alıp görüntüye çevirebilsin diye json dataları oluşturucaz. Bunu mobil içinde kullanılabilir alıp kullanabilirler. Ben burda sevice oluşturdum.
 //burdabki controller lar bir view ile bağlantılı olmayack yalın olarak oluşturucaz.Farklı uugulamlar arsındaki bağımlılığı kaldırmış olduk.
