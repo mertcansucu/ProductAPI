@@ -6,7 +6,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProductAPI.Models;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>{//js api testi yapıcam izin vermem lazım,projenin adı jsClientApp
+    options.AddPolicy(MyAllowSpecificOrigins, 
+    policy =>{
+        // policy.AllowAnyOrigin(); bunu yaparsam tüm servislere açmış olurum
+            policy.WithOrigins("http://127.0.0.1:5500") //bu adrese izin verdim sadece bunun dışındakilere izin vermiyorum,ama bu tamamen güvenli değil
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        
+    });
+});
 
 // Add services to the container.
 
@@ -113,6 +126,10 @@ if (app.Environment.IsDevelopment())//burası bize projeyi geliştirmemi yayınl
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
+
+app.UseRouting();
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseAuthorization();
 
 app.MapControllers();
