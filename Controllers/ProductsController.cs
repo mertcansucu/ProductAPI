@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductAPI.DTO;
@@ -56,6 +57,7 @@ namespace ProductAPI.Controllers
         }
 
         [HttpGet("{id}")]//localhost:5000/api/products/1 => GET ben burda sadece nir elemanı geri getiriyorum
+        [Authorize]
         public async Task<IActionResult> GetProduct(int? id){
             /*ben artık dönderilen değerlein durumuna göre hata mesajları göndericem mesela ben kayıtlı olmasa bile 12 id li birini göderince default olarak dönderiyor ve durum olarak 200 yani başarılı dönderiyor ama bunun ben böyle olmasını istemiyorum eğer yoksa mesela hata mesajını vermem lazım ki frontend ci bunları anlayabilsin
              return _products?.FirstOrDefault(i => i.ProductId == id) ?? new Product();//ben burda diyorum ki _products? null olmadığında içinde gez ve id si eşleşeni getir, ?? burda da diyorum ki eğer eşleşen yoksa null sa, new Product() boş olarak döndür(default değerleriyle)
@@ -68,8 +70,10 @@ namespace ProductAPI.Controllers
 
             var p =await _context
                             .Products
+                            .Where(i => i.ProductId == id)
                             .Select(p => ProductToDTO(p))
-                            .FirstOrDefaultAsync(i => i.ProductId == id);//_products? böyle yaparak products listesinin boş olmadığından emin oldum eğer boş değilse aldım bilgileri
+                            .FirstOrDefaultAsync();//_products? böyle yaparak products listesinin boş olmadığından emin oldum eğer boş değilse aldım bilgileri
+                            //bunu select den önce where ile çağırıp bakıyorum
 
             if (p == null)
             {
@@ -151,12 +155,15 @@ namespace ProductAPI.Controllers
         }
 
         private static ProductDTO ProductToDTO(Product p){//ben bunu oluşturup bilgileri çağırdığımda hangi bilgileri geleceğini söyledim, sonrasında o fonk. verip o şekilde çağırıcam
-            return new ProductDTO//geri gelecek alan
+        //public async Task<IActionResult> GetProduct(int? id) de çağırıken hata aldım onu düzelticem
+            var entity = new ProductDTO();
+            if (p != null)
             {
-                ProductId = p.ProductId,
-                ProductName = p.ProductName,
-                Price = p.Price
-            };
+                entity.ProductId = p.ProductId;
+                entity.ProductName = p.ProductName;
+                entity.Price = p.Price;
+            }
+            return entity;
         }
     }
 }

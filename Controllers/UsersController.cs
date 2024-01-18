@@ -82,7 +82,8 @@ namespace ProductAPI.Controllers
                     }
                 ),
                 Expires = DateTime.UtcNow.AddDays(1),//ne kadar süre kalacağını söyledim
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)//token şifreleme algoritması
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature),//token şifreleme algoritması
+                Issuer = "mertcansucu.com"
                 
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);//token bilgisi ürettim
